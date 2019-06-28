@@ -14,7 +14,7 @@ def get_args():
                         '--scale', 
                         type=float, 
                         default=False, 
-                        help='How many times to enlarge the image (maybe less than 1).'
+                        help='How many times to enlarge the image (maybe less than 1). Cannot be used if width or height is specified.'
                         )
     parser.add_argument('--output', type=str, default=False, help='Where to put the resulting file.')
     args = parser.parse_args()
