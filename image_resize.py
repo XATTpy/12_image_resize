@@ -11,11 +11,11 @@ def get_args():
     parser.add_argument('--width', type=int, default=False, help='Width of the resulting image.')
     parser.add_argument('--height', type=int, default=False, help='Height of the resulting image.')
     parser.add_argument(
-                        '--scale', 
-                        type=float, 
-                        default=False, 
-                        help='How many times to enlarge the image (maybe less than 1). Cannot be used if width or height is specified.'
-                        )
+        '--scale', 
+        type=float, 
+        default=False, 
+        help='How many times to enlarge the image (maybe less than 1). Cannot be used if width or height is specified.'
+    )
     parser.add_argument('--output', type=str, default=False, help='Where to put the resulting file.')
     args = parser.parse_args()
     return args
