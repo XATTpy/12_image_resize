@@ -1,6 +1,8 @@
 from __future__ import print_function
+import PIL
 from PIL import Image
 import argparse
+import os
 
 
 def get_args():
@@ -72,8 +74,25 @@ def get_new_sizes_by_scale(scale, width, height):
 
 
 def get_new_img(img, new_width, new_height):
-    new_img = img.resize((new_width, new_height))
+    new_img = img.resize((new_width, new_height), PIL.Image.ANTIALIAS)
     return new_img
+
+
+def get_img_info(img_path):
+    imgdirpath = os.path.split(img_path)[0]
+    imgname, imgformat = os.path.split(img_path)[1].split('.')
+    return imgname, imgformat, imgdirpath
+
+
+def save_new_img(new_img, output, imgname, imgformat, imgdirpath, new_width, new_height):
+    if output:
+        imgname = imgname + '.{}'.format(imgformat)
+        path = os.path.join(output, imgname)
+        new_img.save(path)
+    else:
+        imgname = imgname + "__{}x{}.{}".format(new_width, new_height, imgformat)
+        path = os.path.join(imgdirpath, imgname)
+        new_img.save(path)
 
 
 if __name__ == '__main__':
@@ -81,6 +100,7 @@ if __name__ == '__main__':
     img_path = get_imgpath(args)
     img = load_img(img_path)
     width, height = get_sizes(img)
+    output = args.output
 
     scale = get_scale(args)
     if scale and (args.width or args.height):
@@ -89,10 +109,10 @@ if __name__ == '__main__':
         quit('Scale must be less than 1')
     elif scale:
         new_width, new_height = get_new_sizes_by_scale(scale, width, height)
-        print(new_width, new_height)
     else:
         ratio, sign = get_ratio(width, height)
         new_width, new_height = get_new_sizes(args, ratio, sign, width, height)
 
     new_img = get_new_img(img, new_width, new_height)
-    new_img.show()
+    imgname, imgformat, imgdirpath = get_img_info(img_path)
+    save_new_img(new_img, output, imgname, imgformat, imgdirpath, new_width, new_height)
