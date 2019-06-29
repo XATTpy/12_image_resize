@@ -77,7 +77,7 @@ def get_image_info(image_path):
     return imagename, imageformat, imagedirpath
 
 
-def save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height):
+def save_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height):
     if output:
         imagename = '{}.{}'.format(imagename, imageformat)
         path = os.path.join(output, imagename)
@@ -87,7 +87,7 @@ def save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_
     new_image.save(path)
 
 
-if __name__ == '__main__':
+def save_new_image():
     args = get_args()
     image_path = args.input
     image = load_image(image_path)
@@ -96,13 +96,13 @@ if __name__ == '__main__':
     scale = args.scale
     output = args.output
     
-    if not os.path.isdir(output):
+    if output and not os.path.isdir(output):
         quit('Enter the existing directory as output')
 
-    if scale != 1 and (args.width or args.height):
-        quit('If a scale is specified, then the width and height cannot be specified.')
-    elif scale <= 0:
+    if scale <= 0:
         quit('Scale must be greater than 0.')
+    elif scale != 1 and (args.width or args.height):
+        quit('If a scale is specified, then the width and height cannot be specified.')
     elif scale != 1:
         new_width, new_height = get_new_sizes_by_scale(scale, width, height)
     else:
@@ -114,4 +114,8 @@ if __name__ == '__main__':
 
     new_image = get_new_image(image, new_width, new_height)
     imagename, imageformat, imagedirpath = get_image_info(image_path)
-    save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height)
+    save_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height)
+
+
+if __name__ == '__main__':
+    save_new_image()
