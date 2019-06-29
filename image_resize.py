@@ -26,7 +26,7 @@ def get_args():
     parser.add_argument(
         '--scale', 
         type=float,
-        default=False,
+        default=1,
         help='How many times to enlarge the image (maybe less than 1). Cannot be used if width or height is specified.'
     )
     parser.add_argument(
@@ -107,15 +107,17 @@ if __name__ == '__main__':
     output = args.output
     scale = args.scale
 
-    if scale and (args.width or args.height):
+    if scale != 1 and (args.width or args.height):
         quit('If a scale is specified, then the width and height cannot be specified.')
-    elif scale >= 1:
-        quit('Scale must be less than 1')
-    elif scale:
+    elif scale <= 0:
+        quit('Scale must be greater than 0.')
+    elif scale != 1:
         new_width, new_height = get_new_sizes_by_scale(scale, width, height)
     else:
         ratio, sign = get_ratio(width, height)
         new_width, new_height = get_new_sizes(args, ratio, sign, width, height)
+        if new_width <= 0 or new_height <= 0:
+            quit('Width and height must be greater than 0.')
 
     new_image = get_new_image(image, new_width, new_height)
     imagename, imageformat, imagedirpath = get_image_info(image_path)
