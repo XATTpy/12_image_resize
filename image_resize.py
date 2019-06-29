@@ -81,11 +81,10 @@ def save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_
     if output:
         imagename = '{}.{}'.format(imagename, imageformat)
         path = os.path.join(output, imagename)
-        new_image.save(path)
     else:
         imagename = '{}__{}x{}.{}'.format(imagename, new_width, new_height, imageformat)
         path = os.path.join(imagedirpath, imagename)
-        new_image.save(path)
+    new_image.save(path)
 
 
 if __name__ == '__main__':
