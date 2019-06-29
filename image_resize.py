@@ -104,11 +104,11 @@ def get_img_info(img_path):
 
 def save_new_img(new_img, output, imgname, imgformat, imgdirpath, new_width, new_height):
     if output:
-        imgname = imgname + '.{}'.format(imgformat)
+        imgname = '{}.{}'.format(imgname, imgformat)
         path = os.path.join(output, imgname)
         new_img.save(path)
     else:
-        imgname = imgname + "__{}x{}.{}".format(new_width, new_height, imgformat)
+        imgname = '{}__{}x{}.{}'.format(imgname, new_width, new_height, imgformat)
         path = os.path.join(imgdirpath, imgname)
         new_img.save(path)
 
