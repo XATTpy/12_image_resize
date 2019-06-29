@@ -56,8 +56,6 @@ def get_ratio(width, height):
 def get_new_sizes(args, ratio, sign, width, height):
     if args.width and args.height:
         new_width, new_height = args.width, args.height
-        if new_width / new_height != width / height:
-            print('Attention! The proportions do not match the original image.')
     elif args.width and not args.height:
         new_width = args.width
         new_height = new_width * ratio if sign else new_width / ratio
@@ -118,6 +116,8 @@ if __name__ == '__main__':
         new_width, new_height = get_new_sizes(args, ratio, sign, width, height)
         if new_width <= 0 or new_height <= 0:
             quit('Width and height must be greater than 0.')
+        if new_width / new_height != width / height:
+            print('Attention! The proportions do not match the original image.')
 
     new_image = get_new_image(image, new_width, new_height)
     imagename, imageformat, imagedirpath = get_image_info(image_path)
