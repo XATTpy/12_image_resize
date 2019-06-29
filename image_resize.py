@@ -38,18 +38,10 @@ def get_args():
     args = parser.parse_args()
     return args
 
-def get_imgpath(args):
-    return args.input
 
-
-def load_img(img_path):
-    img = Image.open(img_path)
-    return img
-
-
-def get_sizes(img):
-    width, height = img.size 
-    return width, height
+def load_image(image_path):
+    image = Image.open(image_path)
+    return image
 
 
 def get_ratio(width, height):
@@ -80,47 +72,42 @@ def get_new_sizes(args, ratio, sign, width, height):
     return new_width, new_height
 
 
-def get_scale(args):
-    scale = args.scale
-    return scale
-
-
 def get_new_sizes_by_scale(scale, width, height):
     new_width = round(width*scale)
     new_height = round(height*scale)
     return new_width, new_height
 
 
-def get_new_img(img, new_width, new_height):
-    new_img = img.resize((new_width, new_height), PIL.Image.ANTIALIAS)
-    return new_img
+def get_new_image(image, new_width, new_height):
+    new_image = image.resize((new_width, new_height), PIL.Image.ANTIALIAS)
+    return new_image
 
 
-def get_img_info(img_path):
-    imgdirpath = os.path.split(img_path)[0]
-    imgname, imgformat = os.path.split(img_path)[1].split('.')
-    return imgname, imgformat, imgdirpath
+def get_image_info(image_path):
+    imagedirpath = os.path.split(image_path)[0]
+    imagename, imageformat = os.path.split(image_path)[1].split('.')
+    return imagename, imageformat, imagedirpath
 
 
-def save_new_img(new_img, output, imgname, imgformat, imgdirpath, new_width, new_height):
+def save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height):
     if output:
-        imgname = '{}.{}'.format(imgname, imgformat)
-        path = os.path.join(output, imgname)
-        new_img.save(path)
+        imagename = '{}.{}'.format(imagename, imageformat)
+        path = os.path.join(output, imagename)
+        new_image.save(path)
     else:
-        imgname = '{}__{}x{}.{}'.format(imgname, new_width, new_height, imgformat)
-        path = os.path.join(imgdirpath, imgname)
-        new_img.save(path)
+        imagename = '{}__{}x{}.{}'.format(imagename, new_width, new_height, imageformat)
+        path = os.path.join(imagedirpath, imagename)
+        new_image.save(path)
 
 
 if __name__ == '__main__':
     args = get_args()
-    img_path = get_imgpath(args)
-    img = load_img(img_path)
-    width, height = get_sizes(img)
+    image_path = args.input
+    image = load_image(image_path)
+    width, height = image.size
     output = args.output
+    scale = args.scale
 
-    scale = get_scale(args)
     if scale and (args.width or args.height):
         quit('If a scale is specified, then the width and height cannot be specified.')
     elif scale >= 1:
@@ -131,6 +118,6 @@ if __name__ == '__main__':
         ratio, sign = get_ratio(width, height)
         new_width, new_height = get_new_sizes(args, ratio, sign, width, height)
 
-    new_img = get_new_img(img, new_width, new_height)
-    imgname, imgformat, imgdirpath = get_img_info(img_path)
-    save_new_img(new_img, output, imgname, imgformat, imgdirpath, new_width, new_height)
+    new_image = get_new_image(image, new_width, new_height)
+    imagename, imageformat, imagedirpath = get_image_info(image_path)
+    save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height)
