@@ -45,23 +45,16 @@ def load_image(image_path):
 
 
 def get_new_sizes(width, height, input_width, input_height):
-    if height > width:
-        ratio = height / width
-        sign = 1
-    else:
-        ratio = width / height
-        sign = 0
+    ratio = width / height
 
     if input_width and input_height:
         new_width, new_height = input_width, input_height
     elif input_width and not input_height:
         new_width = input_width
-        new_height = new_width * ratio if sign else new_width / ratio
-        new_height = round(new_height)
+        new_height = round(new_width/ratio)
     elif not input_width and input_height:
         new_height = input_height
-        new_width = new_height / ratio if sign else new_height * ratio
-        new_width = round(new_width)
+        new_width = round(new_height*ratio)
     else:
         new_width, new_height = width, height
     return new_width, new_height
