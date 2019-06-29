@@ -32,7 +32,6 @@ def get_args():
     parser.add_argument(
         '--output',
         type=str,
-        default=False,
         help='Where to put the resulting file.'
     )
     args = parser.parse_args()
