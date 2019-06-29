@@ -44,25 +44,22 @@ def load_image(image_path):
     return image
 
 
-def get_ratio(width, height):
+def get_new_sizes(width, height, input_width, input_height):
     if height > width:
         ratio = height / width
         sign = 1
     else:
         ratio = width / height
         sign = 0
-    return ratio, sign
 
-
-def get_new_sizes(args, ratio, sign, width, height):
-    if args.width and args.height:
-        new_width, new_height = args.width, args.height
-    elif args.width and not args.height:
-        new_width = args.width
+    if input_width and input_height:
+        new_width, new_height = input_width, input_height
+    elif input_width and not input_height:
+        new_width = input_width
         new_height = new_width * ratio if sign else new_width / ratio
         new_height = round(new_height)
-    elif not args.width and args.height:
-        new_height = args.height
+    elif not input_width and input_height:
+        new_height = input_height
         new_width = new_height / ratio if sign else new_height * ratio
         new_width = round(new_width)
     else:
@@ -103,6 +100,7 @@ if __name__ == '__main__':
     image_path = args.input
     image = load_image(image_path)
     width, height = image.size
+    input_width, input_height = args.width, args.height 
     output = args.output
     scale = args.scale
 
@@ -113,11 +111,10 @@ if __name__ == '__main__':
     elif scale != 1:
         new_width, new_height = get_new_sizes_by_scale(scale, width, height)
     else:
-        ratio, sign = get_ratio(width, height)
-        new_width, new_height = get_new_sizes(args, ratio, sign, width, height)
+        new_width, new_height = get_new_sizes(width, height, input_width, input_height)
         if new_width <= 0 or new_height <= 0:
             quit('Width and height must be greater than 0.')
-        if not math.isclose(new_width/new_height, width/height):
+        if not math.isclose(new_width/new_height, width/height, abs_tol=0.0004):
             print('Attention! The proportions do not match the original image.')
 
     new_image = get_new_image(image, new_width, new_height)
