@@ -2,6 +2,7 @@ import PIL
 from PIL import Image
 import argparse
 import os
+import math
 
 
 def get_args():
@@ -116,7 +117,7 @@ if __name__ == '__main__':
         new_width, new_height = get_new_sizes(args, ratio, sign, width, height)
         if new_width <= 0 or new_height <= 0:
             quit('Width and height must be greater than 0.')
-        if new_width / new_height != width / height:
+        if not math.isclose(new_width/new_height, width/height):
             print('Attention! The proportions do not match the original image.')
 
     new_image = get_new_image(image, new_width, new_height)
