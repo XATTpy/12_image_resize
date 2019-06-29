@@ -77,7 +77,7 @@ def get_image_info(image_path):
     return imagename, imageformat, imagedirpath
 
 
-def save_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height):
+def save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height):
     if output:
         imagename = '{}.{}'.format(imagename, imageformat)
         path = os.path.join(output, imagename)
@@ -87,18 +87,7 @@ def save_image(new_image, output, imagename, imageformat, imagedirpath, new_widt
     new_image.save(path)
 
 
-def save_new_image():
-    args = get_args()
-    image_path = args.input
-    image = load_image(image_path)
-    width, height = image.size
-    input_width, input_height = args.width, args.height 
-    scale = args.scale
-    output = args.output
-    
-    if output and not os.path.isdir(output):
-        quit('Enter the existing directory as output')
-
+def initialize_new_sizes(scale, width, height, input_width, input_height):
     if scale <= 0:
         quit('Scale must be greater than 0.')
     elif scale != 1 and (args.width or args.height):
@@ -111,11 +100,21 @@ def save_new_image():
             quit('Width and height must be greater than 0.')
         if not math.isclose(new_width/new_height, width/height, abs_tol=0.0004):
             print('Attention! The proportions do not match the original image.')
-
-    new_image = get_new_image(image, new_width, new_height)
-    imagename, imageformat, imagedirpath = get_image_info(image_path)
-    save_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height)
+    return new_width, new_height
 
 
 if __name__ == '__main__':
-    save_new_image()
+    args = get_args()
+    image_path = args.input
+    image = load_image(image_path)
+    width, height = image.size
+    input_width, input_height = args.width, args.height 
+    scale = args.scale
+    output = args.output
+    if output and not os.path.isdir(output):
+        quit('Enter the existing directory as output')
+
+    new_width, new_height = initialize_new_sizes(scale, width, height, input_width, input_height)
+    new_image = get_new_image(image, new_width, new_height)
+    imagename, imageformat, imagedirpath = get_image_info(image_path)
+    save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height)
