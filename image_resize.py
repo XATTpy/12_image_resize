@@ -93,8 +93,11 @@ if __name__ == '__main__':
     image = load_image(image_path)
     width, height = image.size
     input_width, input_height = args.width, args.height 
-    output = args.output
     scale = args.scale
+    output = args.output
+    
+    if not os.path.isdir(output):
+        quit('Enter the existing directory as output')
 
     if scale != 1 and (args.width or args.height):
         quit('If a scale is specified, then the width and height cannot be specified.')
