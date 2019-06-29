@@ -1,4 +1,3 @@
-from __future__ import print_function
 import PIL
 from PIL import Image
 import argparse
