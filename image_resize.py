@@ -36,7 +36,7 @@ def get_args():
         help='Where to put the resulting file.'
     )
     args = parser.parse_args()
-    return args
+    return args, parser
 
 
 def load_image(image_path):
@@ -87,24 +87,22 @@ def save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_
     new_image.save(path)
 
 
-def initialize_new_sizes(scale, width, height, input_width, input_height):
+def validate_new_sizes(scale, width, height, input_width, input_height, parser):
     if scale <= 0:
-        quit('Scale must be greater than 0.')
+        parser.error('Scale must be greater than 0.')
     elif scale != 1 and (args.width or args.height):
-        quit('If a scale is specified, then the width and height cannot be specified.')
+        parser.error('If a scale is specified, then the width and height cannot be specified.')
     elif scale != 1:
         new_width, new_height = get_new_sizes_by_scale(scale, width, height)
     else:
         new_width, new_height = get_new_sizes(width, height, input_width, input_height)
         if new_width <= 0 or new_height <= 0:
-            quit('Width and height must be greater than 0.')
-        if not math.isclose(new_width/new_height, width/height, abs_tol=0.0004):
-            print('Attention! The proportions do not match the original image.')
+            parser.error('Width and height must be greater than 0.')
     return new_width, new_height
 
 
 if __name__ == '__main__':
-    args = get_args()
+    args, parser = get_args()
     image_path = args.input
     image = load_image(image_path)
     width, height = image.size
@@ -114,7 +112,10 @@ if __name__ == '__main__':
     if output and not os.path.isdir(output):
         quit('Enter the existing directory as output')
 
-    new_width, new_height = initialize_new_sizes(scale, width, height, input_width, input_height)
+    new_width, new_height = validate_new_sizes(scale, width, height, input_width, input_height, parser)
+    if not math.isclose(new_width/new_height, width/height, abs_tol=0.0004):
+        print('Attention! The proportions do not match the original image.')
+        
     new_image = get_new_image(image, new_width, new_height)
     imagename, imageformat, imagedirpath = get_image_info(image_path)
     save_new_image(new_image, output, imagename, imageformat, imagedirpath, new_width, new_height)
